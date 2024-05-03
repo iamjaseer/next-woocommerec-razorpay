@@ -33,6 +33,8 @@ export async function POST(req, res) {
   //await connectDB();
   // await Order.findOneAndUpdate({ email: email },{ hasPaid: true });
 
+ 
+
   return NextResponse.json({ message: "payment success", error: false }, {  status: 200 });
 }
 

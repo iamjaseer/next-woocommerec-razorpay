@@ -9,6 +9,7 @@ const instance = new Razorpay({
 
 exports.GET = async (request) => {
   const { searchParams } = new URL(request.url);
+  
   const totalAmount = Number(searchParams.get("amount")); // in paisa
 
   const amount = totalAmount * 100;

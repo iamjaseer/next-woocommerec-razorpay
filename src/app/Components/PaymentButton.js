@@ -3,7 +3,10 @@ import React, { Suspense, useState } from "react";
 import { useRouter } from "next/navigation";
 
 
-const PaymentButton = ({ amount }) => {
+const PaymentButton = ({ paymentData }) => {
+
+
+ 
 
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -11,13 +14,21 @@ const PaymentButton = ({ amount }) => {
   const makePayment = async () => {
     setIsLoading(true);
 
-    // make an endpoint to get this key
+   
+    //console.log(paymentData[0].firstName)
+
+    
     const key = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;;
-    const data = await fetch("/api/order/create?amount=" + 1);
+    const data = await fetch("/api/order/create?amount=" + paymentData[1].total);
     const { order } = await data?.json();
     const options = {
       key: key,
-      name: 'jaseerali2012@gmail.com',
+      name: paymentData[0].firstName,
+      firstName: paymentData[0].firstName,
+      lastName: paymentData[0].lastName,
+      email: paymentData[0].email,
+      phone: paymentData[0].phone,
+      address: paymentData[0].address,
       currency: order.currency,
       amount: order.amount,
       order_id: order.id,
@@ -33,8 +44,9 @@ const PaymentButton = ({ amount }) => {
             razorpayPaymentId: response.razorpay_payment_id,
             razorpayOrderId: response.razorpay_order_id,
             razorpaySignature: response.razorpay_signature,
-            email: 'jaseerali2012@gmail.com',
-          }),
+            email: paymentData[0].email,
+            
+           }),
         });
 
         const res = await data.json();
@@ -42,10 +54,12 @@ const PaymentButton = ({ amount }) => {
           // redirect to success page
           //router.push("/success");
           alert('success payment')
+          setIsLoading(false);
+          console.log(response.razorpay_payment_id)
         }
       },
       prefill: {
-        email: 'jaseerali2012@gmail.com',
+        email: paymentData[0].email,
       },
     };
 
@@ -62,12 +76,15 @@ const PaymentButton = ({ amount }) => {
     <>
       <Suspense fallback={''}>
         <div className="">
-          <button
-         
-            onClick={() => makePayment()}
+        {isLoading && <div className="fixed top-0 left-0 right-0 bottom-0 bg-black bg-opacity-60 flex justify-center items-center">
+        <div id="loading"></div>
+          </div>}
+       <button
+         className="bg-sky-500 w-full rounded-md p-4 text-white font-bold uppercase hover:bg-sky-600 active:bg-sky-600 transition-all"
+         onClick={() => makePayment()}
           >
             Pay Now
-          </button>
+           </button>
         </div>
       </Suspense>
     </>
