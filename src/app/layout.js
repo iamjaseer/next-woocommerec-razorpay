@@ -1,10 +1,11 @@
 import Script from 'next/script'
+import '../../public/styles/theme.min.css';
 
 export default function RootLayout({ children }) {
   return (
     <>
       <html lang="en">
-          <body>
+          <body className='bg-sky-100  '>
             {children}
           </body>
       </html>
